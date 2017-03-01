@@ -6,195 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>553</width>
-    <height>835</height>
+    <width>572</width>
+    <height>435</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Grim</string>
   </property>
-  <widget class="QLabel" name="welcome_label_1">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>110</y>
-     <width>621</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Welcome to Grim, a tool for analysing the impacts of groynes on beach morphology and</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="instructions_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>270</y>
-     <width>511</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Next, select a digital elevation model (DEM) showing the beach surface.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="input_elevation_raster_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>290</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Input elevation raster:</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line_1">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>250</y>
-     <width>521</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="input_elevation_raster_lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>290</y>
-     <width>311</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="input_elevation_raster_button">
-   <property name="geometry">
-    <rect>
-     <x>475</x>
-     <y>290</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="close_button">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>780</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Close</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="input_groyne_cell_polygon_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>370</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Input groyne cell polygon:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="input_groyne_cell_polygon_lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>370</y>
-     <width>311</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="input_groyne_cell_polygon_button">
-   <property name="geometry">
-    <rect>
-     <x>475</x>
-     <y>370</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="calculate_button">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>780</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Calculate</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="next_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>730</y>
-     <width>511</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Finally, press the &quot;Calculate&quot; button and a CSV file containing the average elevation will be created.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="next_close_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>750</y>
-     <width>351</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Or press &quot;Close&quot; to cancel the operation. No changes will be made.</string>
-   </property>
-  </widget>
-  <widget class="Line" name="line_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>710</y>
-     <width>521</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
   <widget class="QLabel" name="banner_label">
    <property name="geometry">
     <rect>
@@ -211,220 +29,735 @@
     <pixmap resource="resources.qrc">:/plugins/Grim/banner.png</pixmap>
    </property>
   </widget>
-  <widget class="QLabel" name="welcome_label_2">
+  <widget class="QStackedWidget" name="stack">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>122</y>
-     <width>271</width>
-     <height>16</height>
+     <y>110</y>
+     <width>541</width>
+     <height>281</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
+   <property name="currentIndex">
+    <number>6</number>
+   </property>
+   <widget class="QWidget" name="page">
+    <widget class="QLabel" name="output_directory_instructions_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>72</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>analysis, and processed vector and raster files, will be placed here. Please make sure you have write</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="welcome_label_1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>621</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Welcome to Grim, a tool for analysing the impacts of groynes on beach morphology and</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="results_directory_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Results directory:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="output_directory_instructions_label_1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>To begin, choose a directory for the results. Outputs from the plugin, such as a CSV with the results of the</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="results_directory_check_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select a results directory.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="welcome_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>22</y>
+       <width>271</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>sediment transport.</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="results_directory_lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>120</y>
+       <width>311</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="output_directory_instructions_label_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>82</y>
+       <width>321</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>permissions for this directory</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="results_directory_button">
+     <property name="geometry">
+      <rect>
+       <x>475</x>
+       <y>120</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_2">
+    <widget class="QPushButton" name="input_elevation_raster_button">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>40</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_elevation_raster_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>40</y>
+       <width>121</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input elevation raster:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="elevation_raster_check_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>80</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input digital elevation model.</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="input_elevation_raster_lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>155</x>
+       <y>40</y>
+       <width>311</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="instructions_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>10</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Next, select a digital elevation model (DEM) showing the beach surface.</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_5">
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Next, you need to input the groyne locations. There are several ways to do this. You can select</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>either a single polygon shapefile with multiple features, each representing a groyne cell, or multiple polygon</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>501</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>shapefiles with a single groyne cell in each. Alternatively, you can input one or more line shapefiles, </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>with each line representing a groyne, and the groyne cells will be delineated for you.</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>491</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>How would you like to proceed?</string>
+     </property>
+     <widget class="QRadioButton" name="single_polygon_radio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>411</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Single polygon shapefile, with each groyne cell as a seperate feature</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="multiple_polygons_radio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>441</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Multiple polygon shapefiles, with a single groyne cell in each</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="single_line_radio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>461</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Single line shapefile, with each groyne as a seperate feature</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="multiple_lines_radio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>391</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Multiple line shapefiles, with a single groyne in each</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_3">
+    <widget class="QLabel" name="groyne_cell_check_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input groyne cell polygon.</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="input_groyne_cell_polygon_button">
+     <property name="geometry">
+      <rect>
+       <x>475</x>
+       <y>40</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_groyne_cell_polygon_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input groyne cell polygon:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="single_polygon_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Please select a polygon shapefile, containing each groyne cell as a seperate feature.</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="input_groyne_cell_polygon_lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>40</y>
+       <width>311</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_6">
+    <widget class="QPushButton" name="input_groyne_cell_polygons_button">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>60</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_groyne_cell_polygon_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input groyne cell polygons:</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="input_groyne_cell_polygons_textEdit">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>311</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="multiple_polygons_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Please select the polygon shapefiles, with a single groyne cell in each.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>531</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>You should ensure that the files are in the correct order</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="groyne_cell_check_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>250</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input groyne cell polygons.</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_7">
+    <widget class="QLabel" name="single_line_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>20</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Please select a line shapefile, containing each groyne as a seperate feature.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_groyne_line_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>50</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input groyne lines:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="groyne_line_check_label">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>90</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input groyne lines.</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="input_groyne_line_lineEdit">
+     <property name="geometry">
+      <rect>
+       <x>155</x>
+       <y>50</y>
+       <width>311</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="input_groyne_line_button">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>50</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_8">
+    <widget class="QLabel" name="multiple_lines_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>531</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>You should ensure that the files are in the correct order</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="groyne_lines_check_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>250</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input groyne lines.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_groyne_lines_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input groyne lines:</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="input_groyne_lines_textEdit">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>311</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="multiple_lines_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Please select the line shapefiles, with a single groyne in each.</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="input_groyne_lines_button">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>60</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_4">
+    <widget class="QPushButton" name="calculate_button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Calculate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="next_close_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>351</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Or press &quot;Close&quot; to cancel the operation. No changes will be made.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="next_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Finally, press the &quot;Calculate&quot; button and a CSV file containing the average elevation will be created.</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="close_button">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
    </property>
    <property name="text">
-    <string>sediment transport.</string>
+    <string>Close</string>
    </property>
   </widget>
-  <widget class="QLabel" name="output_directory_instructions_label_1">
+  <widget class="QPushButton" name="next_button">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>150</y>
-     <width>521</width>
-     <height>16</height>
+     <x>110</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>To begin, choose a directory for the results. Outputs from the plugin, such as a CSV with the results of the</string>
+    <string>Next</string>
    </property>
   </widget>
-  <widget class="QLabel" name="output_directory_instructions_label_2">
+  <widget class="QPushButton" name="previous_button">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>162</y>
-     <width>521</width>
-     <height>16</height>
+     <x>30</x>
+     <y>390</y>
+     <width>75</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>analysis, and processed vector and raster files, will be placed here. Please make sure you have write</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="output_directory_instructions_label_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>172</y>
-     <width>321</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>permissions for this directory</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="results_directory_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>200</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Results directory:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="results_directory_lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>200</y>
-     <width>311</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="results_directory_button">
-   <property name="geometry">
-    <rect>
-     <x>475</x>
-     <y>200</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="elevation_raster_check_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>320</y>
-     <width>521</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Please select the input digital elevation model.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="groyne_cell_check_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>690</y>
-     <width>521</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Please select the input groyne cell polygon.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="results_directory_check_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>230</y>
-     <width>511</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Please select a results directory.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="single_polygon_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>340</y>
-     <width>521</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>And either a single polygon shapefile, containing each groyne cell as a seperate feature.</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="multiple_polygons_label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>400</y>
-     <width>511</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Or multiple polygon shapefiles, with each file containing a single groyne cell.</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="input_groyne_cell_polygons_button">
-   <property name="geometry">
-    <rect>
-     <x>475</x>
-     <y>430</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="input_groyne_cell_polygon_label_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>430</y>
-     <width>141</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Input groyne cell polygons:</string>
-   </property>
-  </widget>
-  <widget class="QTextEdit" name="input_groyne_cell_polygons_textEdit">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>430</y>
-     <width>311</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
+    <string>Previous</string>
    </property>
   </widget>
  </widget>
