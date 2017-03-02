@@ -183,6 +183,7 @@ class Grim:
         self.dlg.input_groyne_cell_polygons_button.clicked.connect(self.select_input_groyne_cell_polygons)
         self.dlg.input_groyne_line_button.clicked.connect(self.select_input_groyne_line)
         self.dlg.input_groyne_lines_button.clicked.connect(self.select_input_groyne_lines)
+        self.dlg.input_groyne_multipoints_button.clicked.connect(self.select_input_groyne_multipoints)
         self.dlg.calculate_button.clicked.connect(self.calculate_zonal_statistics)
         self.dlg.close_button.clicked.connect(self.dlg.reject)
         # Screen navigation buttons
@@ -194,6 +195,10 @@ class Grim:
         self.dlg.multiple_polygons_radio.toggled.connect(self.check_groyne_radio_buttons)
         self.dlg.single_line_radio.toggled.connect(self.check_groyne_radio_buttons)
         self.dlg.multiple_lines_radio.toggled.connect(self.check_groyne_radio_buttons)
+
+        # TEMPORARY
+        self.dlg.generate_groyne_cells_button.clicked.connect(self.groyne_multipoints_to_lines)
+        self.dlg.multipoints_order_by_comboBox.activated.connect(self.check_multipoints_order_by)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -246,6 +251,13 @@ class Grim:
         self.input_groyne_line = None
         self.input_groyne_line_ok = None
         self.dlg.input_groyne_line_lineEdit.clear()
+
+        # Multiple line shapefiles
+        self.input_groyne_lines_paths = None
+        self.dlg.multipoints_order_by_comboBox.setEnabled(False)
+
+        # Multiple multipoint shapefiles
+        self.order_by_field = "FID"
 
         self.copied_groyne_cell_polygons = []
         
@@ -332,6 +344,10 @@ class Grim:
         elif self.dlg.multiple_lines_radio.isChecked() is True:
             self.groyne_input_method = "multiple_lines"
             self.current_tab = 5
+            self.dlg.next_button.setEnabled(True)
+        elif self.dlg.multiple_multipoints_radio.isChecked() is True:
+            self.groyne_input_method = "multiple_multipoints"
+            self.current_tab = 6
             self.dlg.next_button.setEnabled(True)
 
     def select_input_groyne_cell_polygon(self):
@@ -447,6 +463,59 @@ class Grim:
 
         self.groyne_cells_from_lines()
 
+    def select_input_groyne_multipoints(self):
+        """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
+        if valid. """
+        self.input_groyne_multipoints_paths = QFileDialog.getOpenFileNames(self.dlg,
+                                                                             "Select input groyne multipoints",
+                                                                             filter = "*.shp")
+        self.dlg.input_groyne_multipoints_textEdit.clear()
+        self.input_groyne_multipoints_invalid_layers = 0
+        counter = 1
+        self.input_groyne_multipoints = []
+        for path in self.input_groyne_multipoints_paths:
+            groyne_multipoint_layer = QgsVectorLayer(path, "Groyne multipoint {0}".format(counter), "ogr")
+            self.input_groyne_multipoints.append(groyne_multipoint_layer)
+            if groyne_multipoint_layer.isValid() is True:
+                self.dlg.input_groyne_multipoints_textEdit.append("<span style=\"color: green;\">{0}</span>".format(path))
+            else:
+                self.dlg.input_groyne_multipoints_textEdit.append(
+                    "<span style=\"color: red;\">{0}</span>".format(path))
+                self.input_groyne_multipoints_invalid_layers += 1
+
+        if self.input_groyne_multipoints_invalid_layers == 0:
+            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected and are all valid.")
+            self.dlg.groyne_lines_check_label.setStyleSheet('color: green')
+        elif self.input_groyne_multipoints_invalid_layers == 1:
+            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected, but one is invalid.")
+            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+        else:
+            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+
+        # The points to lines process involves modifying the file, so make a copy first
+        self.copied_groyne_multipoints = []
+        self.duplicate_shapefile(self.input_groyne_multipoints, self.copied_groyne_multipoints)
+
+        # Find out which fields occur in all layers, so the user can select one to order the points by
+        # when converting them into a line
+        all_sets = []
+        for layer in self.copied_groyne_multipoints:
+            field_name_set = set()
+            pr = layer.dataProvider()
+            for field in pr.fields():
+                name = str(field.name())
+                field_name_set.add(name)
+            all_sets.append(field_name_set)
+        common_fields = set.intersection(*all_sets)
+        self.dlg.multipoints_order_by_comboBox.setEnabled(True)
+        self.dlg.multipoints_order_by_comboBox.addItem("FID")
+        for field in common_fields:
+            self.dlg.multipoints_order_by_comboBox.addItem(field)
+
+    def check_multipoints_order_by(self):
+        self.order_by_field = self.dlg.multipoints_order_by_comboBox.currentText()
+
     def duplicate_shapefile(self, input_shapefile_list, output_shapefile_list):
         """ Create copies of shapefiles and saves to disc. """
         for layer in input_shapefile_list:
@@ -543,6 +612,38 @@ class Grim:
                                                 "utf-8", None)
         self.copied_groyne_cell_polygons = [generated_groyne_cells]
 
+    def groyne_multipoints_to_lines(self):
+        self.input_groyne_line = []
+        for multipoint in self.copied_groyne_multipoints:
+            # The points to lines alg needs a field to group the points together. Add one
+            multipoint.dataProvider().addAttributes(
+                [QgsField("Grouped", QVariant.String)])
+            multipoint.updateFields()
+            for feature in multipoint.getFeatures():
+                groyne_index = feature.fieldNameIndex("Grouped")
+                groyne_field = {groyne_index: "Yes"}
+                multipoint.dataProvider().changeAttributeValues({feature.id(): groyne_field})
+
+            # If FID is selected as the point order method, add an FID field to sort by
+            if self.order_by_field == "FID":
+                multipoint.dataProvider().addAttributes(
+                    [QgsField("FID", QVariant.Int)])
+                multipoint.updateFields()
+                for feature in multipoint.getFeatures():
+                    fid_index = feature.fieldNameIndex("FID")
+                    fid_field = {fid_index: feature.id()}
+                    multipoint.dataProvider().changeAttributeValues({feature.id(): fid_field})
+
+            # Memory layers need to be in the TOC to run processing algs on them
+            QgsMapLayerRegistry.instance().addMapLayer(multipoint)
+            # Convert the points to lines
+            groyne_line = processing.runalg("saga:convertpointstolines",multipoint, self.order_by_field,"Grouped",None)
+            groyne_line = QgsVectorLayer(groyne_line['LINES'], "Groyne Line", "ogr")
+            self.input_groyne_line.append(groyne_line)
+
+        self.groyne_cells_from_lines()
+        self.calculate_zonal_statistics()
+
     def calculate_zonal_statistics(self):
         """ Use QgsZonalStatistics to calculate the average raster value beneath each polygon IE the average beach
         elevation within each polygon. """
@@ -616,6 +717,8 @@ class Grim:
                 self.current_tab = 5
             elif self.groyne_input_method == "multiple_lines":
                 self.current_tab = 6
+            elif self.groyne_input_method == "multiple_multipoints":
+                self.current_tab = 7
         # Otherwise, go to the next screen
         else:
             self.current_tab += 1
@@ -626,12 +729,15 @@ class Grim:
             if self.groyne_input_method is None:
                 self.dlg.next_button.setEnabled(False)
 
+        if self.current_tab ==  3 or self.current_tab == 4 or self.current_tab == 5 or self.current_tab == 6 or self.current_tab == 7:
+            self.current_tab = 7
+
         # If user has moved past the first screen, allow them to go back
         if self.current_tab > 0:
             self.dlg.previous_button.setEnabled(True)
 
         # If user is on the last screen, disable the next screen button
-        if self.current_tab >= 7:
+        if self.current_tab >= 8:
             self.dlg.next_button.setEnabled(False)
 
     def previous_screen(self):
@@ -650,5 +756,5 @@ class Grim:
             self.current_tab = 0
 
         # If user is not on the last screen, allow them to go forward
-        if self.current_tab <= 7:
+        if self.current_tab <= 8:
             self.dlg.next_button.setEnabled(True)

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Grim</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/plugins/Grim/icon.png</normaloff>:/plugins/Grim/icon.png</iconset>
+  </property>
   <widget class="QLabel" name="banner_label">
    <property name="geometry">
     <rect>
@@ -39,14 +43,14 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>7</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QLabel" name="output_directory_instructions_label_2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>72</y>
+       <y>60</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -78,7 +82,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>110</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -91,7 +95,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>48</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -104,7 +108,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>150</y>
        <width>511</width>
        <height>16</height>
       </rect>
@@ -142,7 +146,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>120</y>
+       <y>110</y>
        <width>311</width>
        <height>20</height>
       </rect>
@@ -155,7 +159,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>82</y>
+       <y>70</y>
        <width>321</width>
        <height>20</height>
       </rect>
@@ -168,7 +172,7 @@
      <property name="geometry">
       <rect>
        <x>475</x>
-       <y>120</y>
+       <y>110</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -249,11 +253,11 @@
     </widget>
    </widget>
    <widget class="QWidget" name="page_5">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="groyne_instructions_label_1">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>20</y>
+       <y>10</y>
        <width>491</width>
        <height>16</height>
       </rect>
@@ -262,11 +266,11 @@
       <string>Next, you need to input the groyne locations. There are several ways to do this. You can select</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="groyne_instructions_label_2">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>40</y>
+       <y>30</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -275,11 +279,11 @@
       <string>either a single polygon shapefile with multiple features, each representing a groyne cell, or multiple polygon</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="groyne_instructions_label_3">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
+       <y>50</y>
        <width>501</width>
        <height>16</height>
       </rect>
@@ -288,17 +292,17 @@
       <string>shapefiles with a single groyne cell in each. Alternatively, you can input one or more line shapefiles, </string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="groyne_instructions_label_4">
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>80</y>
+       <y>70</y>
        <width>521</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>with each line representing a groyne, and the groyne cells will be delineated for you.</string>
+      <string>with each line representing a groyne, and the groyne cells will be delineated for you. Finally, you can</string>
      </property>
     </widget>
     <widget class="QGroupBox" name="groupBox">
@@ -307,7 +311,7 @@
        <x>20</x>
        <y>120</y>
        <width>491</width>
-       <height>111</height>
+       <height>131</height>
       </rect>
      </property>
      <property name="title">
@@ -365,6 +369,32 @@
        <string>Multiple line shapefiles, with a single groyne in each</string>
       </property>
      </widget>
+     <widget class="QRadioButton" name="multiple_multipoints_radio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>461</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Multiple multipoint shapefiles</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>input multiple multipoint shapefiles, with a single groyne in each file.</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="page_3">
@@ -676,6 +706,141 @@
      </property>
      <property name="text">
       <string>...</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_9">
+    <widget class="QLabel" name="multiple_multipoints_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>531</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>You should ensure that the files are in the correct order</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="input_groyne_multipoints_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input groyne multipoints:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="input_groyne_multipoints_button">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>60</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="multiple_multipoints_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Please select the multipoint shapefiles, with a single groyne cell in each.</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="groyne_multipoints_check_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>521</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Please select the input groyne multipoints.</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="input_groyne_multipoints_textEdit">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>311</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="multipoints_order_by_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>A line representing the groyne will be generated from the multipoints. Please select the field the points</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="multipoints_order_by_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>511</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>are ordered by. Select &quot;FID&quot; to use the default feature order. </string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="multipoints_order_by_comboBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>220</y>
+       <width>191</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="generate_groyne_cells_button">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>220</y>
+       <width>131</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Generate Groyne Cells</string>
      </property>
     </widget>
    </widget>
