@@ -793,8 +793,8 @@ class Grim:
     
     def create_csv(self):
         """ Create a CSV file, fill it with results. """
-        csv_path = self.results_directory_path + "/results.csv"
-        results_file = open(csv_path, "wb")
+        self.csv_path = self.results_directory_path + "/results.csv"
+        results_file = open(self.csv_path, "wb")
         results_writer = csv.writer(results_file)
         # Column headers
         results_writer.writerow(self.results_header)
@@ -802,12 +802,14 @@ class Grim:
             results_writer.writerow(groyne_cell)
         results_file.close()
 
+        self.completed_screen()
+
     def calculate_check(self):
         """ Check if all the required parameters for the calculation have been input. If so, allow
         the calculation to be carried out. """
         if self.groyne_input_method == "single_polygon":
             if (self.results_directory_path is None or self.results_directory_path == ""
-                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_elevation_rasters) == 0 or self.input_elevation_rasters_invalid_layers > 0
                 or self.input_groyne_cell_polygons is None or self.input_groyne_cell_polygon_ok is False):
                 self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
                 self.dlg.calculate_check_label.setStyleSheet('color: red')
@@ -817,36 +819,37 @@ class Grim:
                 self.dlg.calculate_button.setEnabled(True)
         elif self.groyne_input_method == "multiple_polygons":
             if (self.results_directory_path is None or self.results_directory_path == ""
-                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_elevation_rasters) == 0 or self.input_elevation_rasters_invalid_layers > 0
                 or len(self.input_groyne_cell_polygons) == 0 or self.input_groyne_cell_polygons_invalid_layers != 0):
                 self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
                 self.dlg.calculate_check_label.setStyleSheet('color: red')
-                self.dlg.calculate_button.setEnabled(True)
+                self.dlg.calculate_button.setEnabled(False)
             else:
                 self.dlg.calculate_check_label.setText("")
-                self.dlg.calculate_button.setEnabled(False)
+                self.dlg.calculate_button.setEnabled(True)
         elif self.groyne_input_method == "single_line":
             if (self.results_directory_path is None or self.results_directory_path == ""
-                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_elevation_rasters) == 0 or self.input_elevation_rasters_invalid_layers > 0
                 or self.input_groyne_line is None or self.input_groyne_line_ok is False):
                 self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
                 self.dlg.calculate_check_label.setStyleSheet('color: red')
-                self.dlg.calculate_button.setEnabled(True)
+                self.dlg.calculate_button.setEnabled(False)
             else:
                 self.dlg.calculate_check_label.setText("")
-                self.dlg.calculate_button.setEnabled(False)
+                self.dlg.calculate_button.setEnabled(True)
         elif self.groyne_input_method == "multiple_lines":
             if (self.results_directory_path is None or self.results_directory_path == ""
-                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_elevation_rasters) == 0 or self.input_elevation_rasters_invalid_layers > 0
                 or self.input_groyne_line is None or self.input_groyne_line_ok is False):
                 self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
                 self.dlg.calculate_check_label.setStyleSheet('color: red')
-                self.dlg.calculate_button.setEnabled(True)
+                self.dlg.calculate_button.setEnabled(False)
             else:
                 self.dlg.calculate_check_label.setText("")
+                self.dlg.calculate_button.setEnabled(True)
         elif self.groyne_input_method == "multiple_multipoints":
             if (self.results_directory_path is None or self.results_directory_path == ""
-                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_elevation_rasters) == 0 or self.input_elevation_rasters_invalid_layers > 0
                 or self.input_groyne_multipoints is None or self.input_groyne_multipoints_invalid_layers != 0):
                 self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
                 self.dlg.calculate_check_label.setStyleSheet('color: red')
@@ -854,6 +857,25 @@ class Grim:
             else:
                 self.dlg.calculate_check_label.setText("")
                 self.dlg.calculate_button.setEnabled(True)
+
+    def completed_screen(self):
+        """ Show the completed screen and populate it with information. """
+        self.current_tab = 9
+        self.dlg.stack.setCurrentIndex(self.current_tab)
+
+        self.dlg.results_textEdit.append("<b>Success!</b>")
+        self.dlg.results_textEdit.append("")
+        self.dlg.results_textEdit.append("The analysis has been completed.")
+        self.dlg.results_textEdit.append("")
+        self.dlg.results_textEdit.append("The outputs from this program can be found at <b>{0}</b>".format(self.results_directory_path))
+        self.dlg.results_textEdit.append("They include <b>{0}</b>, which contains data such as the area"
+                                         " of each groyne cell, and the volume and average elevation of material within it,"
+                                         " and one or more shape files representing groyne cells with this information in fields,"
+                                         " which can be used for data visualisation purposes.".format(self.csv_path))
+
+        self.dlg.next_button.setEnabled(False)
+        self.dlg.previous_button.setEnabled(False)
+
 
     def next_screen(self):
         """ Move to the next screen. """
