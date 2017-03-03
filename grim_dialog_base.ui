@@ -520,7 +520,7 @@
       <string>Please select the polygon shapefiles, with a single groyne cell in each.</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="multiple_polygons_label_2">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -533,11 +533,11 @@
       <string>You should ensure that the files are in the correct order</string>
      </property>
     </widget>
-    <widget class="QLabel" name="groyne_cell_check_label_2">
+    <widget class="QLabel" name="multiple_groyne_cell_check_label">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>250</y>
+       <y>240</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -830,19 +830,6 @@
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="generate_groyne_cells_button">
-     <property name="geometry">
-      <rect>
-       <x>230</x>
-       <y>220</y>
-       <width>131</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Generate Groyne Cells</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="page_4">
     <widget class="QPushButton" name="calculate_button">
@@ -884,6 +871,25 @@
       <string>Finally, press the &quot;Calculate&quot; button and a CSV file containing the average elevation will be created.</string>
      </property>
     </widget>
+    <widget class="QLabel" name="calculate_check_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>491</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Required inputs are missing. Please go back and enter them.</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="close_button">
@@ -907,6 +913,9 @@
      <width>75</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="whatsThis">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go to the next screen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Next</string>

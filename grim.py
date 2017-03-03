@@ -184,7 +184,7 @@ class Grim:
         self.dlg.input_groyne_line_button.clicked.connect(self.select_input_groyne_line)
         self.dlg.input_groyne_lines_button.clicked.connect(self.select_input_groyne_lines)
         self.dlg.input_groyne_multipoints_button.clicked.connect(self.select_input_groyne_multipoints)
-        self.dlg.calculate_button.clicked.connect(self.calculate_zonal_statistics)
+        self.dlg.calculate_button.clicked.connect(self.perform_analysis)
         self.dlg.close_button.clicked.connect(self.dlg.reject)
         # Screen navigation buttons
         self.dlg.previous_button.clicked.connect(self.previous_screen)
@@ -195,9 +195,10 @@ class Grim:
         self.dlg.multiple_polygons_radio.toggled.connect(self.check_groyne_radio_buttons)
         self.dlg.single_line_radio.toggled.connect(self.check_groyne_radio_buttons)
         self.dlg.multiple_lines_radio.toggled.connect(self.check_groyne_radio_buttons)
+        self.dlg.multiple_multipoints_radio.toggled.connect(self.check_groyne_radio_buttons)
+        # Groyne multipoints
 
         # TEMPORARY
-        self.dlg.generate_groyne_cells_button.clicked.connect(self.groyne_multipoints_to_lines)
         self.dlg.multipoints_order_by_comboBox.activated.connect(self.check_multipoints_order_by)
 
     def unload(self):
@@ -257,6 +258,7 @@ class Grim:
         self.dlg.multipoints_order_by_comboBox.setEnabled(False)
 
         # Multiple multipoint shapefiles
+        self.input_groyne_multipoints = None
         self.order_by_field = "FID"
 
         self.copied_groyne_cell_polygons = []
@@ -287,16 +289,32 @@ class Grim:
             self.dlg.elevation_raster_check_label.setText("Please select the input digital elevation model.")
             self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
 
-        if self.input_groyne_cell_polygon_path is None and self.input_groyne_cell_polygons_paths is None:
-            self.dlg.groyne_cell_check_label.setText("Please select the input groyne cell polygon(s).")
+        if self.input_groyne_cell_polygon_path is None:
+            self.dlg.groyne_cell_check_label.setText("Please select the input groyne cell polygon.")
             self.dlg.groyne_cell_check_label.setStyleSheet('color: red')
 
-        if self.results_directory_path is None:
+        if self.input_groyne_cell_polygons_paths is None:
+            self.dlg.multiple_groyne_cell_check_label.setText("Please select the input groyne cell polygons.")
+            self.dlg.multiple_groyne_cell_check_label.setStyleSheet('color: red')
+
+        if self.results_directory_path is None or self.results_directory_path == "":
             self.dlg.results_directory_check_label.setText("Please select a results directory.")
             self.dlg.results_directory_check_label.setStyleSheet('color: red')
         else:
             self.dlg.results_directory_check_label.setText("Results directory selected.")
             self.dlg.results_directory_check_label.setStyleSheet('color: green')
+
+        if self.input_groyne_line is None:
+            self.dlg.groyne_line_check_label.setText("Please select the input groyne line.")
+            self.dlg.groyne_line_check_label.setStyleSheet('color: red')
+
+        if self.input_groyne_line is None:
+            self.dlg.groyne_lines_check_label.setText("Please select the input groyne line.")
+            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+
+        if self.input_groyne_multipoints is None:
+            self.dlg.groyne_multipoints_check_label.setText("Please select the input groyne multipoints.")
+            self.dlg.groyne_multipoints_check_label.setStyleSheet('color: red')
 
     def select_results_directory(self):
         """ Bring up a screen allowing users to pick a folder, store this as an attribute """
@@ -309,18 +327,21 @@ class Grim:
         if valid. """
         self.input_elevation_raster_path = QFileDialog.getOpenFileName(self.dlg, "Select input raster", filter="*.tif")
         self.dlg.input_elevation_raster_lineEdit.setText(self.input_elevation_raster_path)
-        self.input_elevation_raster_layer = QgsRasterLayer(self.input_elevation_raster_path, "Input Elevation Raster")
-
-        # Check if the selected layer is valid.
-        if self.input_elevation_raster_layer.isValid() is True:
-            self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected and is valid.")
-            self.dlg.elevation_raster_check_label.setStyleSheet('color: green')
-            self.input_elevation_raster_ok = True
+        if self.input_elevation_raster_path != "":
+            self.input_elevation_raster_layer = QgsRasterLayer(self.input_elevation_raster_path, "Input Elevation Raster")
+            # Check if the selected layer is valid.
+            if self.input_elevation_raster_layer.isValid() is True:
+                self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected and is valid.")
+                self.dlg.elevation_raster_check_label.setStyleSheet('color: green')
+                self.input_elevation_raster_ok = True
+            else:
+                self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected but is not"
+                                                              " valid.")
+                self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
+                self.input_elevation_raster_ok = False
         else:
-            self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected but is not"
-                                                          "valid.")
-            self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
-            self.input_elevation_raster_ok = False
+            self.input_groyne_cell_polygon_path = None
+            self.input_elevation_raster_layer = None
 
         self.check_inputs()
 
@@ -352,62 +373,62 @@ class Grim:
 
     def select_input_groyne_cell_polygon(self):
         """ Bring up a screen allowing the user to select a single .shp file. Store this as an attribute and check
-        if valid. If a file is chosen, the multiple polygons selection method is blanked. """
+        if valid. """
         self.input_groyne_cell_polygon_path = QFileDialog.getOpenFileName(self.dlg, "Select input groyne cell polygon",
                                                                      filter="*.shp")
+        self.dlg.input_groyne_cell_polygon_lineEdit.clear()
         self.dlg.input_groyne_cell_polygon_lineEdit.setText(self.input_groyne_cell_polygon_path)
-        self.input_groyne_cell_polygon = QgsVectorLayer(self.input_groyne_cell_polygon_path, "Input Groyne Cell", "ogr")
+        if self.input_groyne_cell_polygon_path != "":
+            self.input_groyne_cell_polygon = QgsVectorLayer(self.input_groyne_cell_polygon_path, "Input Groyne Cell", "ogr")
 
-        if self.input_groyne_cell_polygon.isValid() is True:
-            self.dlg.groyne_cell_check_label.setText("Groyne cell polygon has been selected and is valid.")
-            self.dlg.groyne_cell_check_label.setStyleSheet('color: green')
-            self.input_groyne_cell_polygon_ok = True
+            if self.input_groyne_cell_polygon.isValid() is True:
+                self.dlg.groyne_cell_check_label.setText("Groyne cell polygon has been selected and is valid.")
+                self.dlg.groyne_cell_check_label.setStyleSheet('color: green')
+                self.input_groyne_cell_polygon_ok = True
+            else:
+                self.dlg.groyne_cell_check_label.setText("Groyne cell polygon has been selected but is not valid")
+                self.dlg.groyne_cell_check_label.setStyleSheet('color: red')
+                self.input_groyne_cell_polygon_ok = False
         else:
-            self.dlg.groyne_cell_check_label.setText("Groyne cell polygon has been selected but is not valid")
-            self.dlg.groyne_cell_check_label.setStyleSheet('color: red')
-            self.input_groyne_cell_polygon_ok = False
-
-        self.input_groyne_cell_polygons_paths_path = None
-        self.dlg.input_groyne_cell_polygons_textEdit.clear()
+            self.input_groyne_cell_polygon_path = None
+            self.input_groyne_cell_polygon = None
 
         self.input_groyne_cell_polygons = [self.input_groyne_cell_polygon]
-        self.duplicate_shapefile(self.input_groyne_cell_polygons, self.copied_groyne_cell_polygons)
 
         self.check_inputs()
 
     def select_input_groyne_cell_polygons(self):
         """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
-        if valid. If files are chosen, the single polygon selection method is blanked. """
+        if valid. """
         self.input_groyne_cell_polygons_paths = QFileDialog.getOpenFileNames(self.dlg,
                                                                              "Select input groyne cell polygons",
                                                                              filter = "*.shp")
-        self.dlg.input_groyne_cell_polygons_textEdit.clear()
-        self.input_groyne_cell_polygons_invalid_layers = 0
-        counter = 1
-        for path in self.input_groyne_cell_polygons_paths:
-            groyne_cell_layer = QgsVectorLayer(path, "Groyne cell {0}".format(counter), "ogr")
-            self.input_groyne_cell_polygons.append(groyne_cell_layer)
-            if groyne_cell_layer.isValid() is True:
-                self.dlg.input_groyne_cell_polygons_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+        if len(self.input_groyne_cell_polygons_paths) != 0:
+            self.input_groyne_cell_polygons = []
+            self.dlg.input_groyne_cell_polygons_textEdit.clear()
+            self.input_groyne_cell_polygons_invalid_layers = 0
+            counter = 1
+            for path in self.input_groyne_cell_polygons_paths:
+                groyne_cell_layer = QgsVectorLayer(path, "Groyne cell {0}".format(counter), "ogr")
+                if groyne_cell_layer.isValid() is True:
+                    self.dlg.input_groyne_cell_polygons_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+                    self.input_groyne_cell_polygons.append(groyne_cell_layer)
+                else:
+                    self.dlg.input_groyne_cell_polygons_textEdit.append(
+                        "<span style=\"color: red;\">{0}</span".format(path))
+                    self.input_groyne_cell_polygons_invalid_layers += 1
+
+            if self.input_groyne_cell_polygons_invalid_layers == 0:
+                self.dlg.multiple_groyne_cell_check_label.setText("Groyne cell polygons have been selected and are all valid.")
+                self.dlg.multiple_groyne_cell_check_label.setStyleSheet('color: green')
+            elif self.input_groyne_cell_polygons_invalid_layers == 1:
+                self.dlg.multiple_groyne_cell_check_label.setText("Groyne cell polygons have been selected, but one is invalid.")
+                self.dlg.multiple_groyne_cell_check_label.setStyleSheet('color: red')
             else:
-                self.dlg.input_groyne_cell_polygons_textEdit.append(
-                    "<span style=\"color: red;\">{0}</span".format(path))
-                self.input_groyne_cell_polygons_invalid_layers += 1
-
-        if self.input_groyne_cell_polygons_invalid_layers == 0:
-            self.dlg.groyne_cell_check_label.setText("Groyne cell polygons have been selected and are all valid.")
-            self.dlg.groyne_cell_check_label.setStyleSheet('color: green')
-        elif self.input_groyne_cell_polygons_invalid_layers == 1:
-            self.dlg.groyne_cell_check_label.setText("Groyne cell polygons have been selected, but one is invalid.")
-            self.dlg.groyne_cell_check_label.setStyleSheet('color: red')
+                self.dlg.multiple_groyne_cell_check_label.setText("Groyne cell polygons have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.multiple_groyne_cell_check_label.setStyleSheet('color: red')
         else:
-            self.dlg.groyne_cell_check_label.setText("Groyne cell polygons have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
-            self.dlg.groyne_cell_check_label.setStyleSheet('color: red')
-
-        self.input_groyne_cell_polygon_path = None
-        self.dlg.input_groyne_cell_polygon_lineEdit.clear()
-
-        self.duplicate_shapefile(self.input_groyne_cell_polygons, self.copied_groyne_cell_polygons)
+            self.input_groyne_cell_polygons = []
 
         self.check_inputs()
 
@@ -416,20 +437,27 @@ class Grim:
         if valid. """
         self.input_groyne_line_path = QFileDialog.getOpenFileName(self.dlg, "Select input groyne lines",
                                                                      filter="*.shp")
-        self.dlg.input_groyne_line_lineEdit.setText(self.input_groyne_line_path)
-        self.input_groyne_line = QgsVectorLayer(self.input_groyne_line_path, "Input Groyne Lines", "ogr")
+        if self.input_groyne_line_path != "":
+            self.dlg.input_groyne_line_lineEdit.setText(self.input_groyne_line_path)
+            self.input_groyne_line = QgsVectorLayer(self.input_groyne_line_path, "Input Groyne Lines", "ogr")
 
-        if self.input_groyne_line.isValid() is True:
-            self.dlg.groyne_line_check_label.setText("Groyne line has been selected and is valid.")
-            self.dlg.groyne_line_check_label.setStyleSheet('color: green')
-            self.input_groyne_line_ok = True
+            if self.input_groyne_line.isValid() is True:
+                self.dlg.groyne_line_check_label.setText("Groyne line has been selected and is valid.")
+                self.dlg.groyne_line_check_label.setStyleSheet('color: green')
+                self.input_groyne_line_ok = True
+                self.input_groyne_line = [self.input_groyne_line]
+            else:
+                self.dlg.groyne_line_check_label.setText("Groyne line has been selected but is not valid")
+                self.dlg.groyne_line_check_label.setStyleSheet('color: red')
+                self.input_groyne_line_ok = False
+                self.input_groyne_line = [self.input_groyne_line]
         else:
-            self.dlg.groyne_line_check_label.setText("Groyne line has been selected but is not valid")
-            self.dlg.groyne_line_check_label.setStyleSheet('color: red')
-            self.input_groyne_line_ok = False
+            self.input_groyne_line_path = None
+            self.input_groyne_line = None
+            self.input_groyne_line = None
 
-        self.input_groyne_line = [self.input_groyne_line]
-        self.groyne_cells_from_lines()
+        self.check_inputs()
+
 
     def select_input_groyne_lines(self):
         """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
@@ -437,31 +465,33 @@ class Grim:
         self.input_groyne_lines_paths = QFileDialog.getOpenFileNames(self.dlg,
                                                                              "Select input groyne lines",
                                                                              filter = "*.shp")
-        self.dlg.input_groyne_lines_textEdit.clear()
-        self.input_groyne_lines_invalid_layers = 0
-        counter = 1
-        self.input_groyne_line = []
-        for path in self.input_groyne_lines_paths:
-            groyne_line_layer = QgsVectorLayer(path, "Groyne line {0}".format(counter), "ogr")
-            self.input_groyne_line.append(groyne_line_layer)
-            if groyne_line_layer.isValid() is True:
-                self.dlg.input_groyne_lines_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+        if len(self.input_groyne_lines_paths) != 0:
+            self.dlg.input_groyne_lines_textEdit.clear()
+            self.input_groyne_lines_invalid_layers = 0
+            counter = 1
+            self.input_groyne_line = []
+            for path in self.input_groyne_lines_paths:
+                groyne_line_layer = QgsVectorLayer(path, "Groyne line {0}".format(counter), "ogr")
+                if groyne_line_layer.isValid() is True:
+                    self.dlg.input_groyne_lines_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+                    self.input_groyne_line.append(groyne_line_layer)
+                else:
+                    self.dlg.input_groyne_lines_textEdit.append(
+                        "<span style=\"color: red;\">{0}</span".format(path))
+                    self.input_groyne_lines_invalid_layers += 1
+
+            if self.input_groyne_lines_invalid_layers == 0:
+                self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected and are all valid.")
+                self.dlg.groyne_lines_check_label.setStyleSheet('color: green')
+            elif self.input_groyne_lines_invalid_layers == 1:
+                self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected, but one is invalid.")
+                self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
             else:
-                self.dlg.input_groyne_lines_textEdit.append(
-                    "<span style=\"color: red;\">{0}</span".format(path))
-                self.input_groyne_lines_invalid_layers += 1
-
-        if self.input_groyne_lines_invalid_layers == 0:
-            self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected and are all valid.")
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: green')
-        elif self.input_groyne_lines_invalid_layers == 1:
-            self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected, but one is invalid.")
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+                self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
         else:
-            self.dlg.groyne_lines_check_label.setText("Groyne lines have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
-
-        self.groyne_cells_from_lines()
+            self.input_groyne_line = None
+            self.input_groyne_lines_paths = None
 
     def select_input_groyne_multipoints(self):
         """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
@@ -469,49 +499,55 @@ class Grim:
         self.input_groyne_multipoints_paths = QFileDialog.getOpenFileNames(self.dlg,
                                                                              "Select input groyne multipoints",
                                                                              filter = "*.shp")
-        self.dlg.input_groyne_multipoints_textEdit.clear()
-        self.input_groyne_multipoints_invalid_layers = 0
-        counter = 1
-        self.input_groyne_multipoints = []
-        for path in self.input_groyne_multipoints_paths:
-            groyne_multipoint_layer = QgsVectorLayer(path, "Groyne multipoint {0}".format(counter), "ogr")
-            self.input_groyne_multipoints.append(groyne_multipoint_layer)
-            if groyne_multipoint_layer.isValid() is True:
-                self.dlg.input_groyne_multipoints_textEdit.append("<span style=\"color: green;\">{0}</span>".format(path))
+        if len(self.input_groyne_multipoints_paths ) != 0:
+            self.dlg.input_groyne_multipoints_textEdit.clear()
+            self.input_groyne_multipoints_invalid_layers = 0
+            counter = 1
+            self.input_groyne_multipoints = []
+            for path in self.input_groyne_multipoints_paths:
+                groyne_multipoint_layer = QgsVectorLayer(path, "Groyne multipoint {0}".format(counter), "ogr")
+                self.input_groyne_multipoints.append(groyne_multipoint_layer)
+                if groyne_multipoint_layer.isValid() is True:
+                    self.dlg.input_groyne_multipoints_textEdit.append("<span style=\"color: green;\">{0}</span>".format(path))
+                else:
+                    self.dlg.input_groyne_multipoints_textEdit.append(
+                        "<span style=\"color: red;\">{0}</span>".format(path))
+                    self.input_groyne_multipoints_invalid_layers += 1
+
+            if self.input_groyne_multipoints_invalid_layers == 0:
+                self.dlg.groyne_multipoints_check_label.setText("Groyne multipoints have been selected and are all valid.")
+                self.dlg.groyne_multipoints_check_label.setStyleSheet('color: green')
+            elif self.input_groyne_multipoints_invalid_layers == 1:
+                self.dlg.groyne_multipoints_check_label.setText("Groyne multipoints have been selected, but one is invalid.")
+                self.dlg.groyne_multipoints_check_label.setStyleSheet('color: red')
             else:
-                self.dlg.input_groyne_multipoints_textEdit.append(
-                    "<span style=\"color: red;\">{0}</span>".format(path))
-                self.input_groyne_multipoints_invalid_layers += 1
+                self.dlg.groyne_multipoints_check_label.setText("Groyne multipoints have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.groyne_multipoints_check_label.setStyleSheet('color: red')
 
-        if self.input_groyne_multipoints_invalid_layers == 0:
-            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected and are all valid.")
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: green')
-        elif self.input_groyne_multipoints_invalid_layers == 1:
-            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected, but one is invalid.")
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+            # The points to lines process involves modifying the file, so make a copy first
+            self.copied_groyne_multipoints = []
+
+            # Find out which fields occur in all layers, so the user can select one to order the points by
+            # when converting them into a line
+            all_sets = []
+            for layer in self.input_groyne_multipoints:
+                field_name_set = set()
+                pr = layer.dataProvider()
+                for field in pr.fields():
+                    name = str(field.name())
+                    field_name_set.add(name)
+                all_sets.append(field_name_set)
+            common_fields = set.intersection(*all_sets)
+            self.dlg.multipoints_order_by_comboBox.setEnabled(True)
+            self.dlg.multipoints_order_by_comboBox.addItem("FID")
+            for field in common_fields:
+                self.dlg.multipoints_order_by_comboBox.addItem(field)
         else:
-            self.dlg.groyne_lines_check_label.setText("Groyne multipoints have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+            self.dlg.input_groyne_multipoints_textEdit.clear()
+            self.input_groyne_multipoints = None
+            self.input_groyne_multipoints_paths = None
 
-        # The points to lines process involves modifying the file, so make a copy first
-        self.copied_groyne_multipoints = []
-        self.duplicate_shapefile(self.input_groyne_multipoints, self.copied_groyne_multipoints)
-
-        # Find out which fields occur in all layers, so the user can select one to order the points by
-        # when converting them into a line
-        all_sets = []
-        for layer in self.copied_groyne_multipoints:
-            field_name_set = set()
-            pr = layer.dataProvider()
-            for field in pr.fields():
-                name = str(field.name())
-                field_name_set.add(name)
-            all_sets.append(field_name_set)
-        common_fields = set.intersection(*all_sets)
-        self.dlg.multipoints_order_by_comboBox.setEnabled(True)
-        self.dlg.multipoints_order_by_comboBox.addItem("FID")
-        for field in common_fields:
-            self.dlg.multipoints_order_by_comboBox.addItem(field)
+        self.check_inputs()
 
     def check_multipoints_order_by(self):
         self.order_by_field = self.dlg.multipoints_order_by_comboBox.currentText()
@@ -606,6 +642,7 @@ class Grim:
             pr.addFeatures([feats])
 
             count += 1
+
         # Write the groyne cells to disc (they are a useful output)
         generated_groyne_cells_path = self.results_directory_path + "\\generated_groyne_cells.shp"
         QgsVectorFileWriter.writeAsVectorFormat(generated_groyne_cells, generated_groyne_cells_path,
@@ -641,8 +678,24 @@ class Grim:
             groyne_line = QgsVectorLayer(groyne_line['LINES'], "Groyne Line", "ogr")
             self.input_groyne_line.append(groyne_line)
 
-        self.groyne_cells_from_lines()
-        self.calculate_zonal_statistics()
+    def perform_analysis(self):
+        if self.groyne_input_method == "single_polygon":
+            self.duplicate_shapefile(self.input_groyne_cell_polygons, self.copied_groyne_cell_polygons)
+            self.calculate_zonal_statistics()
+        elif self.groyne_input_method == "multiple_polygons":
+            self.duplicate_shapefile(self.input_groyne_cell_polygons, self.copied_groyne_cell_polygons)
+            self.calculate_zonal_statistics()
+        elif self.groyne_input_method == "single_line":
+            self.groyne_cells_from_lines()
+            self.calculate_zonal_statistics()
+        elif self.groyne_input_method == "multiple_lines":
+            self.groyne_cells_from_lines()
+            self.calculate_zonal_statistics()
+        elif self.groyne_input_method == "multiple_multipoints":
+            self.duplicate_shapefile(self.input_groyne_multipoints, self.copied_groyne_multipoints)
+            self.groyne_multipoints_to_lines()
+            self.groyne_cells_from_lines()
+            self.calculate_zonal_statistics()
 
     def calculate_zonal_statistics(self):
         """ Use QgsZonalStatistics to calculate the average raster value beneath each polygon IE the average beach
@@ -704,6 +757,59 @@ class Grim:
             results_writer.writerow(groyne_cell)
         results_file.close()
 
+    def calculate_check(self):
+        """ Check if all the required parameters for the calculation have been input. If so, allow
+        the calculation to be carried out. """
+        if self.groyne_input_method == "single_polygon":
+            if (self.results_directory_path is None or self.results_directory_path == ""
+                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or self.input_groyne_cell_polygons is None or self.input_groyne_cell_polygon_ok is False):
+                self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+                self.dlg.calculate_check_label.setStyleSheet('color: red')
+                self.dlg.calculate_button.setEnabled(False)
+            else:
+                self.dlg.calculate_check_label.setText("")
+                self.dlg.calculate_button.setEnabled(True)
+        elif self.groyne_input_method == "multiple_polygons":
+            if (self.results_directory_path is None or self.results_directory_path == ""
+                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or len(self.input_groyne_cell_polygons) == 0 or self.input_groyne_cell_polygons_invalid_layers != 0):
+                self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+                self.dlg.calculate_check_label.setStyleSheet('color: red')
+                self.dlg.calculate_button.setEnabled(True)
+            else:
+                self.dlg.calculate_check_label.setText("")
+                self.dlg.calculate_button.setEnabled(False)
+        elif self.groyne_input_method == "single_line":
+            if (self.results_directory_path is None or self.results_directory_path == ""
+                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or self.input_groyne_line is None or self.input_groyne_line_ok is False):
+                self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+                self.dlg.calculate_check_label.setStyleSheet('color: red')
+                self.dlg.calculate_button.setEnabled(True)
+            else:
+                self.dlg.calculate_check_label.setText("")
+                self.dlg.calculate_button.setEnabled(False)
+        elif self.groyne_input_method == "multiple_lines":
+            if (self.results_directory_path is None or self.results_directory_path == ""
+                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or self.input_groyne_line is None or self.input_groyne_line_ok is False):
+                self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+                self.dlg.calculate_check_label.setStyleSheet('color: red')
+                self.dlg.calculate_button.setEnabled(True)
+            else:
+                self.dlg.calculate_check_label.setText("")
+        elif self.groyne_input_method == "multiple_multipoints":
+            if (self.results_directory_path is None or self.results_directory_path == ""
+                or self.input_elevation_raster_layer is None or self.input_elevation_raster_ok is False
+                or self.input_groyne_multipoints is None or self.input_groyne_multipoints_invalid_layers != 0):
+                self.dlg.calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+                self.dlg.calculate_check_label.setStyleSheet('color: red')
+                self.dlg.calculate_button.setEnabled(False)
+            else:
+                self.dlg.calculate_check_label.setText("")
+                self.dlg.calculate_button.setEnabled(True)
+
     def next_screen(self):
         """ Move to the next screen. """
         # If user is on the groyne input method selection screen, the next screen should not simply be the
@@ -724,6 +830,10 @@ class Grim:
             self.current_tab += 1
         self.dlg.stack.setCurrentIndex(self.current_tab)
 
+        if self.current_tab == 8:
+            # If user is on the last screen, check if the calculation can be carried out.
+            self.calculate_check()
+
         if self.current_tab == 2:
             # If no radio button is selected, disabled the next button
             if self.groyne_input_method is None:
@@ -743,7 +853,7 @@ class Grim:
     def previous_screen(self):
         """ Move to the previous screen. """
         # If the user is on a groyne input screen, take them back to the groyne input method selection screen
-        if self.current_tab == 3 or self.current_tab == 4 or self.current_tab == 5 or self.current_tab == 6:
+        if self.current_tab == 3 or self.current_tab == 4 or self.current_tab == 5 or self.current_tab == 6 or self.current_tab == 7:
             self.current_tab = 2
         # Otherwise, take them back to the previous screen
         else:
