@@ -224,10 +224,10 @@ class Grim:
         self.results_directory_path = None
         self.dlg.results_directory_lineEdit.clear()
 
-        self.input_elevation_raster_path = None
+        self.input_elevation_rasters_paths = None
         self.input_elevation_raster_layer = None
         self.input_elevation_raster_ok = None
-        self.dlg.input_elevation_raster_lineEdit.clear()
+        self.dlg.input_elevation_rasters_textEdit.clear()
 
         self.groyne_input_method = None
         self.dlg.single_polygon_radio.setChecked(False)
@@ -285,7 +285,7 @@ class Grim:
         #     self.dlg.calculate_button.setEnabled(True)
 
         # Check if any of the fields are blank
-        if self.input_elevation_raster_path is None:
+        if self.input_elevation_rasters_paths is None or len(self.input_elevation_rasters_paths) == 0:
             self.dlg.elevation_raster_check_label.setText("Please select the input digital elevation model.")
             self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
 
@@ -325,23 +325,33 @@ class Grim:
     def select_input_raster(self):
         """ Bring up a screen allowing users to select a single .TIf file, store this as an attribute and check
         if valid. """
-        self.input_elevation_raster_path = QFileDialog.getOpenFileName(self.dlg, "Select input raster", filter="*.tif")
-        self.dlg.input_elevation_raster_lineEdit.setText(self.input_elevation_raster_path)
-        if self.input_elevation_raster_path != "":
-            self.input_elevation_raster_layer = QgsRasterLayer(self.input_elevation_raster_path, "Input Elevation Raster")
-            # Check if the selected layer is valid.
-            if self.input_elevation_raster_layer.isValid() is True:
-                self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected and is valid.")
+        self.input_elevation_rasters_paths = QFileDialog.getOpenFileNames(self.dlg, "Select input rasters", filter="*.tif")
+        if len(self.input_elevation_rasters_paths) != 0:
+            self.dlg.input_elevation_rasters_textEdit.clear()
+            self.input_elevation_rasters = []
+            self.input_elevation_rasters_invalid_layers = 0
+            for path in self.input_elevation_rasters_paths:
+                layer_name = os.path.basename(path)
+                layer_name = os.path.splitext(layer_name)[0]
+                elevation_layer = QgsRasterLayer(path, layer_name)
+                if elevation_layer.isValid() is True:
+                    self.dlg.input_elevation_rasters_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+                    self.input_elevation_rasters.append(elevation_layer)
+                else:
+                    self.dlg.input_elevation_rasters_textEdit.append("<span style=\"color: red;\">{0}</span".format(path))
+                    self.input_elevation_rasters_invalid_layers += 1
+
+            if self.input_elevation_rasters_invalid_layers == 0:
+                self.dlg.elevation_raster_check_label.setText("Elevation rasters have been selected and are all valid.")
                 self.dlg.elevation_raster_check_label.setStyleSheet('color: green')
-                self.input_elevation_raster_ok = True
-            else:
-                self.dlg.elevation_raster_check_label.setText("Digital elevation model has been selected but is not"
-                                                              " valid.")
+            elif self.input_elevation_rasters_invalid_layers == 1:
+                self.dlg.elevation_raster_check_label.setText("Elevation rasters have been selected, but one is invalid.")
                 self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
-                self.input_elevation_raster_ok = False
+            else:
+                self.dlg.elevation_raster_check_label.setText("Elevation rasters have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.elevation_raster_check_label.setStyleSheet('color: red')
         else:
-            self.input_groyne_cell_polygon_path = None
-            self.input_elevation_raster_layer = None
+            self.input_elevation_rasters = []
 
         self.check_inputs()
 
@@ -457,7 +467,6 @@ class Grim:
             self.input_groyne_line = None
 
         self.check_inputs()
-
 
     def select_input_groyne_lines(self):
         """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
@@ -700,39 +709,52 @@ class Grim:
     def calculate_zonal_statistics(self):
         """ Use QgsZonalStatistics to calculate the average raster value beneath each polygon IE the average beach
         elevation within each polygon. """
-        QgsMapLayerRegistry.instance().addMapLayer(self.input_elevation_raster_layer)
-        for polygon in self.copied_groyne_cell_polygons:
-            QgsMapLayerRegistry.instance().addMapLayer(polygon)
-            # Arguments - (polygon, raster, attribute prefix, band, stat to calculate
-            zonal_stats = QgsZonalStatistics(polygon, self.input_elevation_raster_path, "", 1,
-                                         QgsZonalStatistics.Mean)
-            zonal_stats.calculateStatistics(None)
+        counter = 1
+        for layer in self.input_elevation_rasters:
+            QgsMapLayerRegistry.instance().addMapLayer(layer)
+            for polygon in self.copied_groyne_cell_polygons:
+                QgsMapLayerRegistry.instance().addMapLayer(polygon)
+                # Arguments - (polygon, raster, attribute prefix, band, stat to calculate
+
+                zonal_stats = QgsZonalStatistics(polygon, layer.source(), "GR_{0!s}_".format(counter), 1,
+                                             QgsZonalStatistics.Mean)
+                zonal_stats.calculateStatistics(None)
+            counter += 1
 
         self.calculate_area()
 
     def calculate_area(self):
-        """ Add a field to the shape file called area, insert polygon area into this. Add a volume field while
-         we're at it. """
+        """ Add a field to the shape file called area, insert polygon area into this."""
         for polygon in self.copied_groyne_cell_polygons:
-            polygon.dataProvider().addAttributes([QgsField("Area", QVariant.Double), QgsField("Volume", QVariant.Double)])
+            polygon.dataProvider().addAttributes([QgsField("GR_Area", QVariant.Double)])
             polygon.updateFields()
 
             for feature in polygon.getFeatures():
                 area = feature.geometry().area()
-                area_index = feature.fieldNameIndex('Area')
+                area_index = feature.fieldNameIndex('GR_Area')
                 area_field = {area_index: area}
                 polygon.dataProvider().changeAttributeValues({feature.id(): area_field})
+
+            # Add a volume field for each elevation raster
+            counter = 1
+            for raster in self.input_elevation_rasters:
+                polygon.dataProvider().addAttributes([QgsField("GR_{0!s}_Vol".format(counter), QVariant.Double)])
+                polygon.updateFields()
+                counter += 1
 
         self.calculate_volume()
 
     def calculate_volume(self):
         """ Insert volume (area * average height) into the volume field. """
-        for polygon in self.copied_groyne_cell_polygons:
-            for feature in polygon.getFeatures():
-                volume_index = feature.fieldNameIndex('Volume')
-                volume = feature['Area'] * feature['Mean']
-                volume_field = {volume_index: volume}
-                polygon.dataProvider().changeAttributeValues({feature.id(): volume_field})
+        counter = 1
+        for raster in self.input_elevation_rasters:
+            for polygon in self.copied_groyne_cell_polygons:
+                for feature in polygon.getFeatures():
+                    volume_index = feature.fieldNameIndex("GR_{0!s}_Vol".format(counter))
+                    volume = feature['GR_Area'] * feature["GR_{0!s}_Mean".format(counter)]
+                    volume_field = {volume_index: volume}
+                    polygon.dataProvider().changeAttributeValues({feature.id(): volume_field})
+            counter += 1
 
         self.select_results()
 
@@ -741,8 +763,31 @@ class Grim:
         i = 0
         for polygon in self.copied_groyne_cell_polygons:
             for feature in polygon.getFeatures():
-                self.results.append([i, feature['Mean'], feature['Area'], feature['Volume']])
+                feature_results = [i, feature['GR_Area']]
+                counter = 1
+                for raster in self.input_elevation_rasters:
+                    volume = feature["GR_{0!s}_Vol".format(counter)]
+                    feature_results.append(volume)
+                    counter += 1
+                counter = 1
+                for raster in self.input_elevation_rasters:
+                    mean = feature["GR_{0!s}_Mean".format(counter)]
+                    feature_results.append(mean)
+                    counter = 1
                 i += 1
+                self.results.append(feature_results)
+
+        self.results_header = ["Groyne Cell", "Area"]
+
+        for raster in self.input_elevation_rasters:
+            raster_name = os.path.basename(raster.source())
+            raster_name = os.path.splitext(raster_name)[0]
+            self.results_header.append("{} - Volume".format(raster_name))
+
+        for raster in self.input_elevation_rasters:
+            raster_name = os.path.basename(raster.source())
+            raster_name = os.path.splitext(raster_name)[0]
+            self.results_header.append("{} - Average Elevation".format(raster_name))
 
         self.create_csv()
     
@@ -752,7 +797,7 @@ class Grim:
         results_file = open(csv_path, "wb")
         results_writer = csv.writer(results_file)
         # Column headers
-        results_writer.writerow(["Groyne Cell", "Average Elevation", "Groyne Cell Area", "Groyne Cell Volume"])
+        results_writer.writerow(self.results_header)
         for groyne_cell in self.results:
             results_writer.writerow(groyne_cell)
         results_file.close()

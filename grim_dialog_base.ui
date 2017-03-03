@@ -43,7 +43,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QLabel" name="output_directory_instructions_label_2">
@@ -213,7 +213,7 @@
      <property name="geometry">
       <rect>
        <x>5</x>
-       <y>80</y>
+       <y>220</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -228,16 +228,6 @@
       <string>Please select the input digital elevation model.</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="input_elevation_raster_lineEdit">
-     <property name="geometry">
-      <rect>
-       <x>155</x>
-       <y>40</y>
-       <width>311</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLabel" name="instructions_label">
      <property name="geometry">
       <rect>
@@ -249,6 +239,19 @@
      </property>
      <property name="text">
       <string>Next, select a digital elevation model (DEM) showing the beach surface.</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="input_elevation_rasters_textEdit">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>40</y>
+       <width>311</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
