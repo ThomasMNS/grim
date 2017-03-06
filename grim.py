@@ -30,6 +30,8 @@ from grim_dialog import GrimDialog
 import os.path
 import csv
 
+import time
+
 
 class Grim:
     """QGIS Plugin Implementation."""
@@ -715,7 +717,6 @@ class Grim:
             for polygon in self.copied_groyne_cell_polygons:
                 QgsMapLayerRegistry.instance().addMapLayer(polygon)
                 # Arguments - (polygon, raster, attribute prefix, band, stat to calculate
-
                 zonal_stats = QgsZonalStatistics(polygon, layer.source(), "GR_{0!s}_".format(counter), 1,
                                              QgsZonalStatistics.Mean)
                 zonal_stats.calculateStatistics(None)
@@ -773,7 +774,7 @@ class Grim:
                 for raster in self.input_elevation_rasters:
                     mean = feature["GR_{0!s}_Mean".format(counter)]
                     feature_results.append(mean)
-                    counter = 1
+                    counter += 1
                 i += 1
                 self.results.append(feature_results)
 
