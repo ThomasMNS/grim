@@ -178,6 +178,9 @@ class Grim:
             parent=self.iface.mainWindow())
 
         # Establishing signal / slot connections
+        # Welcome screen
+        self.dlg.groyne_elevation_analysis_welcome_radio.toggled.connect(self.check_welcome_radio_buttons)
+        self.dlg.beach_profile_generation_welcome_radio.toggled.connect(self.check_welcome_radio_buttons)
         # General buttons
         self.dlg.results_directory_button.clicked.connect(self.select_results_directory)
         self.dlg.input_elevation_raster_button.clicked.connect(self.select_input_raster)
@@ -199,9 +202,12 @@ class Grim:
         self.dlg.multiple_lines_radio.toggled.connect(self.check_groyne_radio_buttons)
         self.dlg.multiple_multipoints_radio.toggled.connect(self.check_groyne_radio_buttons)
         # Groyne multipoints
-
-        # TEMPORARY
         self.dlg.multipoints_order_by_comboBox.activated.connect(self.check_multipoints_order_by)
+        # Beach profiles tool
+        self.dlg.profiles_results_directory_button.clicked.connect(self.profiles_select_results_directory)
+        self.dlg.profiles_input_elevation_raster_button.clicked.connect(self.profiles_select_input_raster)
+        self.dlg.profiles_input_lines_button.clicked.connect(self.profiles_select_input_lines)
+        self.dlg.profiles_calculate_button.clicked.connect(self.profiles_perform_analysis)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -219,9 +225,30 @@ class Grim:
         self.dlg.setFixedSize(self.dlg.size())
 
         # Reset everything
+        self.page_indexes = {"first": 0,
+                             "welcome": 0,
+                             "elevation results directory": 1,
+                             "elevation dem": 2,
+                             "elevation groyne input method": 3,
+                             "single groyne cells input": 4,
+                             "multiple groyne cells input": 5,
+                             "single groyne lines input": 6,
+                             "multiple groyne lines input": 7,
+                             "groyne multipoints input": 8,
+                             "elevation calculate": 9,
+                             "elevation completed": 10,
+                             "profiles results directory": 11,
+                             "profiles elevation dem": 12,
+                             "profiles single groyne lines input": 13,
+                             "profiles calculate": 14,
+                             "last": 14}
+
         self.current_tab = 0
         self.dlg.stack.setCurrentIndex(self.current_tab)
         self.dlg.previous_button.setEnabled(False)
+        self.dlg.next_button.setEnabled(False)
+
+        self.tool_selected = None
 
         self.results_directory_path = None
         self.dlg.results_directory_lineEdit.clear()
@@ -267,6 +294,12 @@ class Grim:
         
         self.results = []
 
+        # Beach profiles tool
+        self.profiles_results_directory_path = None
+        self.profiles_input_elevation_rasters_paths = None
+        self.profiles_input_elevation_rasters = None
+        self.profiles_input_line = None
+
         # show the dialog
         self.dlg.show()
         
@@ -274,17 +307,10 @@ class Grim:
 
     # Custom methods
     # These contain logic for the GIS analysis etc
+    # Groyne Elevation Analysis Tool
     
     def check_inputs(self):
-        """ Check that all inputs are present. If so, allow the "Calculate" button to be pressed """
-
-        # If results directory, input DEM, or both groyne input methods are blank or invalid, do not allow
-        # analysis to be carried out
-        # if (self.results_directory_path is None or self.input_elevation_raster_ok is not True
-        #     or (self.input_groyne_cell_polygon_ok is not True and self.input_groyne_cell_polygons_invalid_layers != 0)):
-        #     self.dlg.calculate_button.setEnabled(False)
-        # else:
-        #     self.dlg.calculate_button.setEnabled(True)
+        """ Check that all inputs are present."""
 
         # Check if any of the fields are blank
         if self.input_elevation_rasters_paths is None or len(self.input_elevation_rasters_paths) == 0:
@@ -310,13 +336,42 @@ class Grim:
             self.dlg.groyne_line_check_label.setText("Please select the input groyne line.")
             self.dlg.groyne_line_check_label.setStyleSheet('color: red')
 
-        if self.input_groyne_line is None:
-            self.dlg.groyne_lines_check_label.setText("Please select the input groyne line.")
-            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
-
         if self.input_groyne_multipoints is None:
             self.dlg.groyne_multipoints_check_label.setText("Please select the input groyne multipoints.")
             self.dlg.groyne_multipoints_check_label.setStyleSheet('color: red')
+
+        # Beach profile tool
+        if self.profiles_results_directory_path is None or self.profiles_results_directory_path == "":
+            self.dlg.profiles_results_directory_check_label.setText("Please select a results directory.")
+            self.dlg.profiles_results_directory_check_label.setStyleSheet('color: red')
+        else:
+            self.dlg.profiles_results_directory_check_label.setText("Results directory selected.")
+            self.dlg.profiles_results_directory_check_label.setStyleSheet('color: green')
+
+        if self.profiles_input_elevation_rasters_paths is None or len(self.profiles_input_elevation_rasters_paths) == 0:
+            self.dlg.profiles_elevation_raster_check_label.setText("Please select the input digital elevation model(s).")
+            self.dlg.profiles_elevation_raster_check_label.setStyleSheet('color: red')
+        else:
+            self.dlg.profiles_elevation_raster_check_label.setText("Digital elevation model(s) selected.")
+            self.dlg.profiles_elevation_raster_check_label.setStyleSheet('color: green')
+
+        if self.profiles_input_line is None:
+            self.dlg.profiles_lines_check_label.setText("Please select the input profile line(s).")
+            self.dlg.profiles_lines_check_label.setStyleSheet('color: red')
+
+    def check_welcome_radio_buttons(self):
+        """ One of the welcome screens radio buttons has been toggled. Check which is currently active.
+        Change current tab, so that when self.next_screen is called, user is taken to the correct tool start screen,
+        rather than just the next one. Enable next button (may be disabled if self.selected_tool
+        was previously none). """
+        if self.dlg.groyne_elevation_analysis_welcome_radio.isChecked() is True:
+            self.tool_selected = "groyne_elevation_analysis"
+            self.current_tab = self.page_indexes['welcome']
+            self.dlg.next_button.setEnabled(True)
+        elif self.dlg.beach_profile_generation_welcome_radio.isChecked() is True:
+            self.tool_selected = "beach_profile_generation"
+            self.current_tab = self.page_indexes['elevation completed']
+            self.dlg.next_button.setEnabled(True)
 
     def select_results_directory(self):
         """ Bring up a screen allowing users to pick a folder, store this as an attribute """
@@ -861,7 +916,7 @@ class Grim:
 
     def completed_screen(self):
         """ Show the completed screen and populate it with information. """
-        self.current_tab = 9
+        self.current_tab = self.page_indexes['elevation completed']
         self.dlg.stack.setCurrentIndex(self.current_tab)
 
         self.dlg.results_textEdit.append("<b>Success!</b>")
@@ -877,62 +932,261 @@ class Grim:
         self.dlg.next_button.setEnabled(False)
         self.dlg.previous_button.setEnabled(False)
 
+    # Beach Profile Generation Tool
+    def profiles_select_results_directory(self):
+        """ Bring up a screen allowing users to pick a folder, store this as an attribute """
+        self.profiles_results_directory_path = QFileDialog.getExistingDirectory(self.dlg, "Choose results directory")
+        self.dlg.profiles_results_directory_lineEdit.setText(self.profiles_results_directory_path)
+        self.check_inputs()
+
+    def profiles_select_input_raster(self):
+        """ Bring up a screen allowing users to select one or more .TIf files, store this as an attribute list and check
+        if valid. """
+        self.profiles_input_elevation_rasters_paths = QFileDialog.getOpenFileNames(self.dlg, "Select input rasters",
+                                                                                   filter="*.tif")
+        if len(self.profiles_input_elevation_rasters_paths) != 0:
+            self.dlg.profiles_input_elevation_rasters_textEdit.clear()
+            self.profiles_input_elevation_rasters = []
+            self.profiles_input_elevation_rasters_invalid_layers = 0
+            for path in self.profiles_input_elevation_rasters_paths:
+                layer_name = os.path.basename(path)
+                layer_name = os.path.splitext(layer_name)[0]
+                elevation_layer = QgsRasterLayer(path, layer_name)
+                if elevation_layer.isValid() is True:
+                    self.dlg.profiles_input_elevation_rasters_textEdit.append("<span style=\"color: green;\">{0}</span".format(path))
+                    self.profiles_input_elevation_rasters.append(elevation_layer)
+                else:
+                    self.dlg.profiles_input_elevation_rasters_textEdit.append("<span style=\"color: red;\">{0}</span".format(path))
+                    self.profiles_input_elevation_rasters_invalid_layers += 1
+
+            if self.profiles_input_elevation_rasters_invalid_layers == 0:
+                self.dlg.profiles_elevation_raster_check_label.setText("Elevation rasters have been selected and are all valid.")
+                self.dlg.profiles_elevation_raster_check_label.setStyleSheet('color: green')
+            elif self.profiles_input_elevation_rasters_invalid_layers == 1:
+                self.dlg.profiles_elevation_raster_check_label.setText("Elevation rasters have been selected, but one is invalid.")
+                self.dlg.profiles_elevation_raster_check_label.setStyleSheet('color: red')
+            else:
+                self.dlg.profiles_elevation_raster_check_label.setText("Elevation rasters have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.profiles_elevation_raster_check_label.setStyleSheet('color: red')
+        else:
+            self.profiles_input_elevation_rasters = None
+
+        self.check_inputs()
+
+    def profiles_select_input_lines(self):
+        """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute list and check
+        if valid. """
+        self.profiles_input_lines_paths = QFileDialog.getOpenFileNames(self.dlg,
+                                                                             "Select input profile lines",
+                                                                             filter = "*.shp")
+        if len(self.profiles_input_lines_paths) != 0:
+            self.dlg.profiles_input_lines_textEdit.clear()
+            self.profiles_input_lines_invalid_layers = 0
+            counter = 1
+            self.profiles_input_line = []
+            for path in self.profiles_input_lines_paths:
+                line_layer = QgsVectorLayer(path, "Profile line {0}".format(counter), "ogr")
+                if line_layer.isValid() is True:
+                    self.dlg.profiles_input_lines_textEdit.append("<span style=\"color: green;\">{0}</span>".format(path))
+                    self.profiles_input_line.append(line_layer)
+                else:
+                    self.dlg.profiles_input_lines_textEdit.append(
+                        "<span style=\"color: red;\">{0}</span>".format(path))
+                    self.profiles_input_lines_invalid_layers += 1
+
+            if self.profiles_input_lines_invalid_layers == 0:
+                self.dlg.profiles_lines_check_label.setText("Profile lines have been selected and are all valid.")
+                self.dlg.profiles_lines_check_label.setStyleSheet('color: green')
+            elif self.profiles_input_lines_invalid_layers == 1:
+                self.dlg.profiles_lines_check_label.setText("Profile lines have been selected, but one is invalid.")
+                self.dlg.profiles_lines_check_label.setStyleSheet('color: red')
+            else:
+                self.dlg.profiles_lines_check_label.setText("Profile lines have been selected, but {0} are invalid".format(self.input_groyne_cell_polygons_invalid_layers))
+                self.dlg.profiles_lines_check_label.setStyleSheet('color: red')
+        else:
+            self.profile_input_line = None
+            self.profile_input_lines_paths = None
+
+    def profiles_perform_analysis(self):
+        self.profiles_create_profile()
+        self.profiles_create_csv()
+
+    def profiles_create_profile(self):
+        # Get the distance value from the spinBox
+        distance = self.dlg.profiles_distance_spinBox.value()
+        # Create points along the line
+        # Parameters: vector line, distance, start point, end point, output file
+        self.all_results = []
+        for profile_line in self.profiles_input_line:
+            profile_points = processing.runalg("qgis:createpointsalonglines", profile_line, distance, 0, 0, None)
+            # Get the path
+            profile_points_path = profile_points['output']
+            # Create a vector layer from the path
+            profile_points = QgsVectorLayer(profile_points_path, "Profile Points", "ogr")
+
+            line_results = []
+            for input_raster in self.profiles_input_elevation_rasters:
+                # Picking a path name
+                # Raster name
+                raster_name = os.path.basename(input_raster.source())
+                raster_name = os.path.splitext(raster_name)[0]
+                # Profile name
+                profile_name = os.path.basename(profile_line.source())
+                profile_name = os.path.basename(profile_name)[0]
+                QMessageBox.information(None, "DEBUG", profile_name)
+
+                elevation_points_path_name = "{0}\{1}_{2}_Profile.shp".format(self.profiles_results_directory_path,
+                                                                               profile_name, raster_name)
+
+                # Extract the raster values to the points
+                processing.runalg("saga:addgridvaluestopoints", profile_points, input_raster.source(), 0,
+                                  elevation_points_path_name)
+                elevation_points = QgsVectorLayer(elevation_points_path_name, "Elevation Points", "ogr")
+                QgsMapLayerRegistry.instance().addMapLayer(elevation_points)
+
+                # Create a set with field names
+                original_field_names = set()
+                pr = profile_points.dataProvider()
+                for field in pr.fields():
+                    name = str(field.name())
+                    original_field_names.add(name)
+
+                # Create a set with the new field names
+                new_field_names = set()
+                pr = elevation_points.dataProvider()
+                for field in pr.fields():
+                    name = str(field.name())
+                    new_field_names.add(name)
+
+                # We can now get the name of the field that was added by the addgridvaluestopoints algorithm
+                new_field = new_field_names.difference(original_field_names)
+                new_field = list(new_field)
+                new_field = new_field[0]
+
+                # Get the results
+                profile_results = []
+                for feature in elevation_points.getFeatures():
+                    result = [feature['Distance'], feature[new_field]]
+                    profile_results.append(result)
+                line_results.append(profile_results)
+
+            self.all_results.append(line_results)
+
+    def profiles_create_csv(self):
+        line_counter = 0
+        for line in self.all_results:
+            raster_counter = 0
+            for raster in line:
+                line_name = self.profiles_input_line[line_counter]
+                line_name = line_name.source()
+                line_name = os.path.basename(line_name)
+                line_name = os.path.splitext(line_name)[0]
+
+                raster_name = self.profiles_input_elevation_rasters[raster_counter]
+                raster_name = raster_name.source()
+                raster_name = os.path.basename(raster_name)
+                raster_name = os.path.splitext(raster_name)[0]
+
+                csv_path = "{0}/{1}_{2}_profile.csv".format(self.profiles_results_directory_path, line_name,
+                                                            raster_name)
+                results_file = open(csv_path, "wb")
+                results_writer = csv.writer(results_file)
+                # Column header
+                results_writer.writerow(["Distance along profile", "Elevation"])
+                for result in raster:
+                    results_writer.writerow(result)
+                raster_counter += 1
+            line_counter += 1
+
+    def profiles_calculate_check(self):
+        """ Check if all the required parameters for the calculation have been input. If so, allow
+        the calculation to be carried out. """
+        if (self.profiles_results_directory_path is None
+            or self.profiles_input_elevation_rasters is None
+            or self.profiles_input_elevation_rasters_invalid_layers > 0
+            or self.profiles_input_line is None
+            or self.profiles_input_lines_invalid_layers > 0):
+            self.dlg.profiles_calculate_check_label.setText("Required inputs are missing. Please go back and enter them.")
+            self.dlg.profiles_calculate_check_label.setStyleSheet('color: red')
+            self.dlg.profiles_calculate_button.setEnabled(False)
+        else:
+            self.dlg.profiles_calculate_check_label.setText("")
+            self.dlg.profiles_calculate_button.setEnabled(True)
 
     def next_screen(self):
         """ Move to the next screen. """
         # If user is on the groyne input method selection screen, the next screen should not simply be the
         # next one in the list, it should be decided by which radio button is selected
-        if self.current_tab == 2:
+        if self.current_tab == self.page_indexes['elevation groyne input method']:
             if self.groyne_input_method == "single_polygon":
-                self.current_tab = 3
+                self.current_tab = self.page_indexes['single groyne cells input']
             elif self.groyne_input_method == "multiple_polygons":
-                self.current_tab = 4
+                self.current_tab = self.page_indexes['multiple groyne cells input']
             elif self.groyne_input_method == "single_line":
-                self.current_tab = 5
+                self.current_tab = self.page_indexes['single groyne lines input']
             elif self.groyne_input_method == "multiple_lines":
-                self.current_tab = 6
+                self.current_tab = self.page_indexes['multiple groyne lines input']
             elif self.groyne_input_method == "multiple_multipoints":
-                self.current_tab = 7
+                self.current_tab = self.page_indexes['groyne multipoints input']
+        elif self.current_tab  == self.page_indexes['welcome']:
+            if self.tool_selected == "beach_profile_generation":
+                self.current_tab = self.page_indexes['profiles results directory']
+            elif self.tool_selected == "groyne_elevation_analysis":
+                self.current_tab = self.page_indexes['elevation results directory']
         # Otherwise, go to the next screen
         else:
             self.current_tab += 1
         self.dlg.stack.setCurrentIndex(self.current_tab)
 
-        if self.current_tab == 8:
+        if self.current_tab == self.page_indexes['elevation calculate']:
             # If user is on the last screen, check if the calculation can be carried out.
             self.calculate_check()
 
-        if self.current_tab == 2:
-            # If no radio button is selected, disabled the next button
+        if self.current_tab == self.page_indexes['profiles calculate']:
+            self.profiles_calculate_check()
+
+        if self.current_tab == self.page_indexes['elevation groyne input method']:
+            # If no groyne input radio button is selected, disabled the next button
             if self.groyne_input_method is None:
                 self.dlg.next_button.setEnabled(False)
 
-        if self.current_tab ==  3 or self.current_tab == 4 or self.current_tab == 5 or self.current_tab == 6 or self.current_tab == 7:
-            self.current_tab = 7
+        if self.current_tab == self.page_indexes['elevation groyne input method']:
+            # If no groyne input radio button is selected, disabled the next button
+            if self.tool_selected is None:
+                self.dlg.next_button.setEnabled(False)
+
+        # If the user is on a groyne input page, make sure the next page is the calculate page
+        if (self.current_tab == self.page_indexes['single groyne cells input']
+            or self.current_tab == self.page_indexes['multiple groyne cells input']
+            or self.current_tab == self.page_indexes['single groyne lines input']
+            or self.current_tab == self.page_indexes['multiple groyne lines input']
+            or self.current_tab == self.page_indexes['groyne multipoints input']):
+            self.current_tab = self.page_indexes['groyne multipoints input']
 
         # If user has moved past the first screen, allow them to go back
-        if self.current_tab > 0:
+        if self.current_tab > self.page_indexes['first']:
             self.dlg.previous_button.setEnabled(True)
 
         # If user is on the last screen, disable the next screen button
-        if self.current_tab >= 8:
+        if self.current_tab == self.page_indexes['elevation calculate']:
             self.dlg.next_button.setEnabled(False)
 
     def previous_screen(self):
         """ Move to the previous screen. """
         # If the user is on a groyne input screen, take them back to the groyne input method selection screen
-        if self.current_tab == 3 or self.current_tab == 4 or self.current_tab == 5 or self.current_tab == 6 or self.current_tab == 7:
-            self.current_tab = 2
+        if (self.current_tab == self.page_indexes['single groyne cells input']
+            or self.current_tab == self.page_indexes['multiple groyne cells input']
+            or self.current_tab == self.page_indexes['single groyne lines input']
+            or self.current_tab == self.page_indexes['multiple groyne lines input']
+            or self.current_tab == self.page_indexes['groyne multipoints input']):
+            self.current_tab = self.page_indexes['elevation groyne input method']
+        elif self.current_tab == self.page_indexes['profiles results directory']:
+            self.current_tab = self.page_indexes['welcome']
         # Otherwise, take them back to the previous screen
         else:
             self.current_tab -= 1
         self.dlg.stack.setCurrentIndex(self.current_tab)
 
-        # If user is on the first screen, disable the previous screen button
-        if self.current_tab == 0:
-            self.dlg.previous_button.setEnabled(False)
-            self.current_tab = 0
-
         # If user is not on the last screen, allow them to go forward
-        if self.current_tab <= 8:
+        if self.current_tab <= self.page_indexes['last']:
             self.dlg.next_button.setEnabled(True)
