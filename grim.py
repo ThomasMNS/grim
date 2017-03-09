@@ -237,14 +237,15 @@ class Grim:
                              "single groyne lines input": 6,
                              "multiple groyne lines input": 7,
                              "groyne multipoints input": 8,
-                             "elevation calculate": 9,
-                             "elevation completed": 10,
-                             "profiles results directory": 11,
-                             "profiles elevation dem": 12,
-                             "profiles single groyne lines input": 13,
-                             "profiles calculate": 14,
-                             "profiles completed": 15,
-                             "last": 15}
+                             "elevation advanced settings": 9,
+                             "elevation calculate": 10,
+                             "elevation completed": 11,
+                             "profiles results directory": 12,
+                             "profiles elevation dem": 13,
+                             "profiles single groyne lines input": 14,
+                             "profiles calculate": 15,
+                             "profiles completed": 16,
+                             "last": 16}
 
         # Set the current page to the first page, take the user to the first page, then disable the navigation buttons.
         # They will be enabled again when they select a tool radio button.
@@ -280,11 +281,13 @@ class Grim:
         self.polygonGroup.addButton( self.dlg.multiple_polygons_radio)
         self.polygonGroup.addButton(self.dlg.single_line_radio)
         self.polygonGroup.addButton(self.dlg.multiple_lines_radio)
+        self.polygonGroup.addButton(self.dlg.multiple_multipoints_radio)
         self.polygonGroup.setExclusive(False)
         self.dlg.single_polygon_radio.setChecked(False)
         self.dlg.multiple_polygons_radio.setChecked(False)
         self.dlg.single_line_radio.setChecked(False)
         self.dlg.multiple_lines_radio.setChecked(False)
+        self.dlg.multiple_multipoints_radio.setChecked(False)
         self.polygonGroup.setExclusive(True)
         self.groyne_input_method = None
 
@@ -370,6 +373,9 @@ class Grim:
             self.dlg.groyne_line_check_label.setText("Please select the input groyne line.")
             self.dlg.groyne_line_check_label.setStyleSheet('color: red')
 
+            self.dlg.groyne_lines_check_label.setText("Please select the input groyne lines.")
+            self.dlg.groyne_lines_check_label.setStyleSheet('color: red')
+
         if self.input_groyne_multipoints is None:
             self.dlg.groyne_multipoints_check_label.setText("Please select the input groyne multipoints.")
             self.dlg.groyne_multipoints_check_label.setStyleSheet('color: red')
@@ -453,23 +459,18 @@ class Grim:
         was previously none). """
         if self.dlg.single_polygon_radio.isChecked() is True:
             self.groyne_input_method = "single_polygon"
-            self.current_tab = 2
             self.dlg.next_button.setEnabled(True)
         elif self.dlg.multiple_polygons_radio.isChecked() is True:
             self.groyne_input_method = "multiple_polygons"
-            self.current_tab = 3
             self.dlg.next_button.setEnabled(True)
         elif self.dlg.single_line_radio.isChecked() is True:
             self.groyne_input_method = "single_line"
-            self.current_tab = 4
             self.dlg.next_button.setEnabled(True)
         elif self.dlg.multiple_lines_radio.isChecked() is True:
             self.groyne_input_method = "multiple_lines"
-            self.current_tab = 5
             self.dlg.next_button.setEnabled(True)
         elif self.dlg.multiple_multipoints_radio.isChecked() is True:
             self.groyne_input_method = "multiple_multipoints"
-            self.current_tab = 6
             self.dlg.next_button.setEnabled(True)
 
     def select_input_groyne_cell_polygon(self):
@@ -562,6 +563,7 @@ class Grim:
     def select_input_groyne_lines(self):
         """ Bring up a screen allowing the user to select multiple .shp files. Store this as an attribute and check
         if valid. """
+        self.dlg.input_groyne_lines_textEdit.clear()
         self.input_groyne_lines_paths = QFileDialog.getOpenFileNames(self.dlg,
                                                                              "Select input groyne lines",
                                                                              filter = "*.shp")
@@ -810,6 +812,19 @@ class Grim:
                                              QgsZonalStatistics.Mean)
                 zonal_stats.calculateStatistics(None)
             counter += 1
+
+        self.add_height_adjustment()
+
+    def add_height_adjustment(self):
+        counter = 1
+        for layer in self.input_elevation_rasters:
+            for polygon in self.copied_groyne_cell_polygons:
+                field_name = "GR_{0!s}_mean".format(counter)
+                for feature in polygon.getFeatures():
+                    height = feature[field_name]
+                    new_height = height + self.dlg.height_adjustment_spinBox.value()
+                    new_height_field = {feature.fieldNameIndex(field_name): new_height}
+                    polygon.dataProvider().changeAttributeValues({feature.id(): new_height_field})
 
         self.calculate_area()
 
@@ -1198,6 +1213,7 @@ class Grim:
         # Otherwise, go to the next screen
         else:
             self.current_tab += 1
+
         self.dlg.stack.setCurrentIndex(self.current_tab)
 
         if self.current_tab == self.page_indexes['elevation calculate']:
@@ -1232,6 +1248,8 @@ class Grim:
         # If user is on the last screen, disable the next screen button
         if self.current_tab == self.page_indexes['elevation calculate']:
             self.dlg.next_button.setEnabled(False)
+        elif self.current_tab == self.page_indexes['profiles calculate']:
+            self.dlg.next_button.setEnabled(False)
 
     def previous_screen(self):
         """ Move to the previous screen. """
@@ -1252,3 +1270,8 @@ class Grim:
         # If user is not on the last screen, allow them to go forward
         if self.current_tab <= self.page_indexes['last']:
             self.dlg.next_button.setEnabled(True)
+
+        if self.current_tab <= self.page_indexes['first']:
+            self.dlg.previous_button.setEnabled(False)
+        else:
+            self.dlg.previous_button.setEnabled(True)
