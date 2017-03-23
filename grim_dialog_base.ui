@@ -43,7 +43,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="page_11">
     <widget class="QLabel" name="welcome_label_3">
@@ -190,6 +190,9 @@
        <height>17</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the cirlce to the left if you would like to use the groyne elevation analysis tool. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Once you have selected an option, press the &amp;quot;Next&amp;quot; button to proceed to it. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An option must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Continue to the groyne elevation analysis tool</string>
      </property>
@@ -250,6 +253,9 @@
        <width>391</width>
        <height>17</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the cirlce to the left if you would like to use the beach profile generation tool. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Once you have selected an option, press the &amp;quot;Next&amp;quot; button to proceed to it. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;An option must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Continue to the beach profile generation tool</string>
@@ -313,6 +319,9 @@
        <weight>75</weight>
        <bold>true</bold>
       </font>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have successfully chosen a results directory, and red if you have not.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Please select a results directory.</string>
@@ -408,6 +417,9 @@
        <weight>75</weight>
        <bold>true</bold>
       </font>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have successfully chosen at least one raster DEM, and it is a valid layer. It will appear red if you have not chosen at least one DEM, or if any of the DEMs you choose are not valid layers.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Please select the input digital elevation model.</string>
@@ -520,6 +532,9 @@
         <height>17</height>
        </rect>
       </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the circle to the left if you would like to input a single polygon shapefile with multiple features, where each feature represents a single groyne cell. &lt;/p&gt;&lt;p&gt;To select a different option, simply click a different circle. &lt;/p&gt;&lt;p&gt;One of the groyne input options must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
        <string>Single polygon shapefile, with each groyne cell as a seperate feature</string>
       </property>
@@ -532,6 +547,9 @@
         <width>441</width>
         <height>17</height>
        </rect>
+      </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the circle to the left if you would like to input a multiple polygon shapefiles, each with a single feature representing. a single groyne cell. &lt;/p&gt;&lt;p&gt;To select a different option, simply click a different circle. &lt;/p&gt;&lt;p&gt;One of the groyne input options must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>Multiple polygon shapefiles, with a single groyne cell in each</string>
@@ -546,6 +564,9 @@
         <height>17</height>
        </rect>
       </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the circle to the left if you would like to input a single line shapefile with multiple features, where each feature represents a single groyne line.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Grim will then automatically extract the locations of groyne cells from these groyne lines. &lt;/p&gt;&lt;p&gt;To select a different option, simply click a different circle. &lt;/p&gt;&lt;p&gt;One of the groyne input options must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
        <string>Single line shapefile, with each groyne as a seperate feature</string>
       </property>
@@ -558,6 +579,9 @@
         <width>391</width>
         <height>17</height>
        </rect>
+      </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the circle to the left if you would like to input multiple line shapefiles with a single feature in each, each representing a single groyne line. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Grim will then automatically extract the locations of groyne cells from these groyne lines. &lt;/p&gt;&lt;p&gt;To select a different option, simply click a different circle. &lt;/p&gt;&lt;p&gt;One of the groyne input options must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>Multiple line shapefiles, with a single groyne in each</string>
@@ -572,8 +596,11 @@
         <height>17</height>
        </rect>
       </property>
+      <property name="whatsThis">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select this option by clicking the circle to the left if you would like to input multiple point shapefiles, with each shapefile representing the location of a single groyne, with the points placed along it. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Grim will then automatically extract the locations of groyne cells from these points. &lt;/p&gt;&lt;p&gt;To select a different option, simply click a different circle. &lt;/p&gt;&lt;p&gt;One of the groyne input options must be selected to continue.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
       <property name="text">
-       <string>Multiple multipoint shapefiles</string>
+       <string>Multiple point shapefiles</string>
       </property>
      </widget>
     </widget>
@@ -606,6 +633,9 @@
        <weight>75</weight>
        <bold>true</bold>
       </font>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected a groyne cell polygon, and it is a valid layer. It will appear red if you have not chosen a shapefile, or if the shapefile you have chosen is not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Please select the input groyne cell polygon.</string>
@@ -662,6 +692,9 @@
        <height>20</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The path to the selected groyne cell polygon will appear here. You cannot type in this box directly. Rather, you should choose a shapefile by clicking the button to the right. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="page_6">
@@ -673,6 +706,9 @@
        <width>41</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a file selection dialogue, that can be used to select one or more shapefiles. Each shapefile should contain a single feature, representing a groyne cell. The paths to the selected shapefiles will appear in the box to the left. They will appear green if they are valid vector layers, and red if they are not. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least one valid shapefile is required to complete the analysis. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -700,8 +736,18 @@
        <height>161</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Paths to selected shapefiles will be displayed here. They will be displayed in green if they are valid vector layers, and red if they are not. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The list cannot be edited directly, rather files should be selected by clicking the button to the right. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least one polygon shapefile is required to complete the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="multiple_polygons_label">
@@ -744,6 +790,9 @@
        <weight>75</weight>
        <bold>true</bold>
       </font>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected at least one groyne cell, and it is a valid layer. It will appear red if you have not chosen a shapefile, or if any of the shapefiles you have chosen are not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Please select the input groyne cell polygons.</string>
@@ -792,6 +841,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected a groyne lines shapefile, and it is a valid layer. It will appear red if you have not chosen a shapefile, or if the shapefile you have chosen is not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Please select the input groyne lines.</string>
      </property>
@@ -805,6 +857,9 @@
        <height>20</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The path to the selected line shapefile will appear here. You cannot type in this box directly. Rather, you should choose a shapefile by clicking the button to the right. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
     </widget>
     <widget class="QPushButton" name="input_groyne_line_button">
      <property name="geometry">
@@ -814,6 +869,9 @@
        <width>41</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a file selection dialogue, where you can pick a single shapefile. This line shape file should include the groynes you want to include in your analysis, with each groyne as a seperate feature. The shapefile should include at least two features. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Grim will use these to automatically determine the locations of groyne cells. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The path to the selected shapefile will appear in the box to the left. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -849,6 +907,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected at least one groyne line shapefile, and it is a valid layer. It will appear red if you have not chosen a shapefile, or if any of the shapefiles you have chosen are not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Please select the input groyne lines.</string>
      </property>
@@ -875,6 +936,9 @@
        <height>161</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Paths to selected line shapefiles will be displayed here. They will be displayed in green if they are valid vector layers, and red if they are not.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The list cannot be edited directly, rather files should be selected by clicking the button to the right. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least two vector shapefiles is required to complete the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -900,6 +964,9 @@
        <width>41</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a file selection dialogue, that can be used to select line shapefiles. Each shapefile should contain a single feature, representing the location of a groyne.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The paths to the selected shapefiles will appear in the box to the left. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least two valid line shapefiles is required to complete the analysis. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -941,6 +1008,9 @@
        <width>41</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a file selection dialogue, that can be used to select point shapefiles. Each shapefile should represent the location of a single groyne, with the points placed in order along the groyne.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The paths to the selected shapefiles will appear in the box to the left. Choosing at least two valid shapefiles is required to complete the analysis. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -987,6 +1057,9 @@
        <height>81</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Paths to selected vector files will be displayed here. They will be displayed in green if they are valid vector layers, and red if they are not.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The list cannot be edited directly, rather files should be selected by clicking the button to the right. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least two valid point layers is required to complete the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -1025,6 +1098,9 @@
        <width>191</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This drop down box should be used to select which field the points in the input point files are ordered by. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The points should be placed along the groyne, starting at one end and running in sequence until the other. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Only fields that are present in all the input shapefiles will appear here. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Alternatively, you can select &amp;quot;FID&amp;quot; to sort by feature ID. This is normally, but not guaranteed to be, the order in which the points where created. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;To choose a field, click on the drop down box and then click the appropriate option. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </widget>
@@ -1109,6 +1185,9 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use this spinbox to enter a height to increase or decrease all calculated elevations by. For example, by entering -10, all elevations in the results will be reduced by 10. This can be useful in calculating elevations relative to a different datum than the one used in the input rasters.&lt;/p&gt;&lt;p&gt;The unit used is the height unit of the input elevation rasters. &lt;/p&gt;&lt;p&gt;Use the arrows to increase or decrease the number by 0.1, or click the box and type a number of your choosing. &lt;/p&gt;&lt;p&gt;Leaving the number at 0 will result in no changes being made to the results.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="minimum">
       <double>-999999999.000000000000000</double>
      </property>
@@ -1129,6 +1208,9 @@
        <width>75</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to perform the analysis. This may take some time depending on the amount of data to be processed. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You will be unable to click this button if any of the required inputs from the previous screens are missing. If this is the case, use the &amp;quot;Previous&amp;quot; button to go back and input the required data, and the &amp;quot;Next&amp;quot; button to return to this screen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Calculate</string>
@@ -1175,6 +1257,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have entered all the required inputs, and you will be able to click the &amp;quot;Calculate&amp;quot; button to perform the analysis. It will appear red if required inputs are missing, and you will not be able to perform the analysis until they have been entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Required inputs are missing. Please go back and enter them.</string>
      </property>
@@ -1189,6 +1274,9 @@
        <width>511</width>
        <height>251</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This box will provide information on the analysis that has been carried out. Click the &amp;quot;Close&amp;quot; button to close the window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -1260,6 +1348,9 @@ p, li { white-space: pre-wrap; }
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected a results directory, and red if you have not.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Please select a results directory.</string>
      </property>
@@ -1287,7 +1378,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="whatsThis">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a folder selection dialogue that you can use to select a results directory. Outputs from the plugin, such as a CSV with the results of the analysis, and processed vector files, will be placed here. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The path you have selected will appear in the box to the right. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you would like to choose another directory, simply click the button again and choose a new one. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing a results directory is required to carry out the analysis. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a folder selection dialogue that you can use to select a results directory. Outputs from the plugin, such as a CSV with the results of the analysis, and processed vector files, will be placed here. &lt;/p&gt;&lt;p&gt;The path you have selected will appear in the box to the right. &lt;/p&gt;&lt;p&gt;If you would like to choose another directory, simply click the button again and choose a new one. &lt;/p&gt;&lt;p&gt;Choosing a results directory is required to carry out the analysis. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -1314,6 +1405,9 @@ p, li { white-space: pre-wrap; }
        <width>61</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use this spinbox to input how regularly you would like to sample the elevation of your rasters. For example, if you input 10, the elevation of the raster every 10 map units along your profile line will be sampled. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Use the up and down arrows to increase or decrease the value by one, or click in the box and type a number of your choosing.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="minimum">
       <number>1</number>
@@ -1397,6 +1491,9 @@ p, li { white-space: pre-wrap; }
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected at least on DEM, and it is a valid raster layer. It will appear red if you have not chosen a DEM, or if the DEM you have chosen is not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Please select the input digital elevation model(s).</string>
      </property>
@@ -1418,8 +1515,11 @@ p, li { white-space: pre-wrap; }
        <bold>true</bold>
       </font>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have selected a profile line, and it is a valid layer. It will appear red if you have not chosen a shapefile, or if the shapefile you have chosen is not valid.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
-      <string>Please select the input groyne lines.</string>
+      <string>Please select the profile lines.</string>
      </property>
     </widget>
     <widget class="QPushButton" name="profiles_input_lines_button">
@@ -1430,6 +1530,9 @@ p, li { white-space: pre-wrap; }
        <width>41</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to bring up a file selection dialogue, that can be used to select one or more line shapefiles showing the desired locations of your profiles.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The paths to the selected shapefiles will appear in the box to the left. Choosing at least one valid shapefile is required to complete the analysis. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>...</string>
@@ -1445,20 +1548,7 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <property name="text">
-      <string>Please select the line shapefiles, with a single groyne in each.</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="profiles_multiple_lines_label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>531</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>You should ensure that the files are in the correct order</string>
+      <string>Please select the line shapefiles, with a single profile line in each</string>
      </property>
     </widget>
     <widget class="QLabel" name="profiles_input_lines_label">
@@ -1483,6 +1573,9 @@ p, li { white-space: pre-wrap; }
        <height>161</height>
       </rect>
      </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Paths to selected shapefiles will be displayed here. They will be displayed in green if they are valid vector layers, and red if they are not.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The list cannot be edited directly, rather files should be selected by clicking the button to the right. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Choosing at least one shapefile is required to complete the analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="readOnly">
       <bool>true</bool>
      </property>
@@ -1503,6 +1596,9 @@ p, li { white-space: pre-wrap; }
        <weight>75</weight>
        <bold>true</bold>
       </font>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This label will appear green if you have entered all the required inputs, and you will be able to click the &amp;quot;Calculate&amp;quot; button to perform the analysis. It will appear red if required inputs are missing, and you will not be able to perform the analysis until they have been entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Required inputs are missing. Please go back and enter them.</string>
@@ -1529,6 +1625,9 @@ p, li { white-space: pre-wrap; }
        <width>75</width>
        <height>23</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to perform the analysis. This may take some time depending on the amount of data to be processed. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;You will be unable to click this button if any of the required inputs from the previous screens are missing. If this is the case, use the &amp;quot;Previous&amp;quot; button to go back and input the required data, and the &amp;quot;Next&amp;quot; button to return to this screen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Calculate</string>
@@ -1557,6 +1656,9 @@ p, li { white-space: pre-wrap; }
        <width>511</width>
        <height>251</height>
       </rect>
+     </property>
+     <property name="whatsThis">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This box will provide information on the analysis that has been carried out. Click the &amp;quot;Close&amp;quot; button to close the window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="readOnly">
       <bool>true</bool>
