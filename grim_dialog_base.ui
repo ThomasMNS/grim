@@ -43,7 +43,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>14</number>
    </property>
    <widget class="QWidget" name="page_11">
     <widget class="QLabel" name="welcome_label_3">
@@ -1504,7 +1504,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>250</y>
+       <y>230</y>
        <width>521</width>
        <height>16</height>
       </rect>
@@ -1526,7 +1526,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>470</x>
-       <y>60</y>
+       <y>40</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1555,7 +1555,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>40</y>
        <width>141</width>
        <height>16</height>
       </rect>
@@ -1568,7 +1568,7 @@ p, li { white-space: pre-wrap; }
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>60</y>
+       <y>40</y>
        <width>311</width>
        <height>161</height>
       </rect>
